@@ -1,51 +1,76 @@
-# QR code using Python
-#install pip install qrcode
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
+from .database import SessionLocal
+from .models import User  # Import the SQLAlchemy User model
 from PIL import Image
 import qrcode
+import io
+from fastapi.responses import StreamingResponse
 
-# Create a QR code object with a larger size and higher error correction
-qr = qrcode.QRCode(version=3, box_size=20, border=10, error_correction=qrcode.constants.ERROR_CORRECT_H)
+# FastAPI instance
+app = FastAPI()
 
-# The data you want to encode in the QR code
-# Define the vCard data
-vcard = """BEGIN:VCARD
-VERSION:4.0
-FN:John Smith
-ORG:Example Company
-TITLE:CEO
-TEL;TYPE=WORK,VOICE:(555) 555-5555
-EMAIL;TYPE=PREF,INTERNET:john.smith@example.com
-URL:https://www.example.com
-END:VCARD"""
+# Dependency to get a database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
+# QR code generation for user health information
+@app.get("/generate_qr/{user_id}")
+async def generate_qr(user_id: int, db: Session = Depends(get_db)):
+    # Retrieve the user by ID from the database
+    user = db.query(User).filter(User.id == user_id).first()
 
-# Add the data to the QR code object
-qr.add_data(data)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
-# Make the QR code
-qr.make(fit=True)
+    # Create the vCard or custom health information text
+    health_info = f"""Health Information:
+    Email: {user.email}
+    Alergias: {"Sí" if user.alergias else "No"}
+    Alergias a medicamentos: {"Sí" if user.alergias_medicamentos else "No"}
+    Medicamentos actuales: {user.medicamentos_actuales}
+    Diabetes: {"Sí" if user.diabetes else "No"}
+    Marcapasos: {"Sí" if user.marcapasos else "No"}
+    Epilepsia: {"Sí" if user.epilepsia else "No"}
+    Grupo sanguíneo: {user.grupo_sanguineo}
+    Enfermedades cardíacas: {"Sí" if user.enfermedades_cardiacas else "No"}
+    Enfermedades respiratorias: {"Sí" if user.enfermedades_respiratorias else "No"}
+    """
 
-# Create an image from the QR code with a black fill color and white background
-img = qr.make_image(fill_color="black", back_color="white")
+    # Create a QR code with the user's health information
+    qr = qrcode.QRCode(
+        version=3, 
+        box_size=10, 
+        border=5, 
+        error_correction=qrcode.constants.ERROR_CORRECT_H
+    )
+    qr.add_data(health_info)
+    qr.make(fit=True)
 
-# Save the QR code image
-img.save("qr_code_vcard.png")
+    # Create the image for the QR code
+    img = qr.make_image(fill_color="black", back_color="white")
 
-img.open("qr_code_vcard.png")
+    # Optionally, add a logo to the QR code
+    try:
+        logo = Image.open("logo.png")
+        logo = logo.resize((50, 50))
 
-# Open the logo or image file
-logo = Image.open("logo.png")
+        img_w, img_h = img.size
+        logo_w, logo_h = logo.size
+        pos = ((img_w - logo_w) // 2, (img_h - logo_h) // 2)
+        img.paste(logo, pos)
+    except FileNotFoundError:
+        # If the logo is not found, proceed without it
+        pass
 
-# Resize the logo or image if needed
-logo = logo.resize((50, 50))
+    # Save the QR code to a byte stream to return it as a response
+    img_byte_arr = io.BytesIO()
+    img.save(img_byte_arr, format="PNG")
+    img_byte_arr.seek(0)
 
-# Position the logo or image in the center of the QR code
-img_w, img_h = img.size
-logo_w, logo_h = logo.size
-pos = ((img_w - logo_w) // 2, (img_h - logo_h) // 2)
-
-# Paste the logo or image onto the QR code
-img.paste(logo, pos)
-
-# Save the QR code image with logo or image
-img.save("qr_code_with_logo.png")
+    # Return the QR code image as a response
+    return StreamingResponse(img_byte_arr, media_type="image/png")
