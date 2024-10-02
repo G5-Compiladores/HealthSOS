@@ -5,7 +5,6 @@ from typing import List
 from . import models, schemas, database
 from . import auth
 
-
 app = FastAPI()
 
 
