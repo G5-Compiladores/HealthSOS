@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from typing import List
 from . import models, schemas, database
-from .auth import create_access_token, get_current_user
+from . import auth
+
 
 app = FastAPI()
+
 
 @app.post("/register", response_model=schemas.UserCreate)
 async def register(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
@@ -26,7 +29,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/health-form", response_model=schemas.HealthForm)
-async def submit_health_form(form: schemas.HealthForm, current_user: models.User = Depends(get_current_user), db: Session = Depends(database.get_db)):
+async def submit_health_form(form: schemas.HealthForm, current_user: models.User = Depends(auth.get_current_user), db: Session = Depends(database.get_db)):
     for key, value in form.dict().items():
         setattr(current_user, key, value)
     db.commit()
