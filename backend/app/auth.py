@@ -3,7 +3,7 @@ from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from . import models, database
+from . import models, database, schemas
 
 SECRET_KEY = "tu_clave_secreta"
 ALGORITHM = "HS256"
@@ -35,3 +35,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise credentials_exception
     return user
+
+def submit_health_form(db: Session, form: schemas.HealthForm, current_user: models.User):
+    for key, value in form.dict().items():
+        setattr(current_user, key, value)
+    db.commit()
+    return {"message": "Health form submitted successfully"}

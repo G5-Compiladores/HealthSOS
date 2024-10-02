@@ -30,6 +30,16 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
+
+class HealthFormResponse(BaseModel):
+    message: str
+
+class ChatbotQuestion(BaseModel):
+    question: str
+
+class ChatbotResponse(BaseModel):
+    response: str
+
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 

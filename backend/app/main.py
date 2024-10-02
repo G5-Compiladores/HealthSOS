@@ -2,10 +2,17 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
-from . import models, schemas, database
+from . import models, schemas, database, chatbot
 from . import auth
 
 app = FastAPI()
+
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 @app.post("/register", response_model=schemas.UserCreate)
@@ -34,6 +41,10 @@ async def submit_health_form(form: schemas.HealthForm, current_user: models.User
     db.commit()
     return form
 
+
+@app.post("/chatbot", response_model=schemas.ChatbotResponse)
+def chatbot_endpoint(question: schemas.ChatbotQuestion):
+    return chatbot.get_chatbot_response(question.question)
 
 # Read
 @app.get("/health-form", response_model=schemas.HealthForm)
