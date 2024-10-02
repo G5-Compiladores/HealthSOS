@@ -1,0 +1,65 @@
+# Entornos virtuales
+venv/
+.env
+
+# Archivos de configuración de entorno
+*.env
+*.local
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+
+# Archivos de logs
+*.log
+
+# Archivos de bases de datos locales
+*.sqlite3
+
+# Archivos de compilación
+build/
+dist/
+*.egg-info/
+
+# Archivos de Streamlit
+.streamlit/
+
+# Archivos de Docker
+docker-compose.override.yml
+# Python
+*.py[cod]
+__pycache__/
+*.so
+
+# Entornos virtuales
+venv/
+.env
+
+# Configuración de entorno
+*.env
+*.local
+
+# Archivos de logs
+*.log
+
+# Archivos de bases de datos locales
+*.sqlite3
+
+# Archivos de compilación
+build/
+dist/
+*.egg-info/
+
+# Archivos de Streamlit
+.streamlit/
+
+# Archivos de Docker
+docker-compose.override.yml
+
+# Configuración de IDE
+.vscode/
+.idea/
