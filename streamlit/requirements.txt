@@ -1,2 +1,13 @@
 streamlit  
 requests
+streamlit
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+passlib
+python-jose
+transformers
+torch
+requests
+mysql-connector-python
