@@ -13,4 +13,5 @@ El usuario también podrá editar su información y actualizarla según las nece
 -Ayuda con chatbot
 -Acceso sin conexión a QR
 
-
+#Expectativas
+-Insertar el uso de biometria
