@@ -28,6 +28,9 @@ dist/
 # Archivos de Streamlit
 .streamlit/
 
+#Archivo data_base
+my_database.db
+
 # Archivos de Docker
 docker-compose.override.yml
 # Python
