@@ -15,8 +15,11 @@ El usuario también podrá editar su información y actualizarla según las nece
 
 ## Expectativas
 * Implementar uso de biometría para acceder a los datos de los pacientes.
+  
 ## Tecnologías utilizadas
 * MySQL
 * FastAPI
 * Python
 * Alchemy
+
+## Autores
