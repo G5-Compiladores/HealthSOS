@@ -23,3 +23,13 @@ El usuario también podrá editar su información y actualizarla según las nece
 * Alchemy
 
 ## Autores
+* Ana Gonzalez Bueno
+* Daniela Zapata
+* Emmanuel Martinez
+* Esther Tapias
+* Ingo Heredia
+* Isabel Ipiales
+* Juliana Amorin
+* Luis Paez-Bravo
+* Magaly Lazarte
+
