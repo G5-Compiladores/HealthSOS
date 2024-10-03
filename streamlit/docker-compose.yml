@@ -1,0 +1,11 @@
+version: '3.8'  # O la versión que prefieras  
+
+services:  
+  streamlit:  
+    build:  
+      context: .  # Construcción desde el directorio actual  
+      dockerfile: Dockerfile  # Dockerfile  
+    ports:  
+      - "8501:8501"  # Mapea el puerto 8501 del contenedor al puerto 8501 del host  
+    volumes:  
+      - .:/app  # Monta el directorio actual en /app dentro del contenedor
